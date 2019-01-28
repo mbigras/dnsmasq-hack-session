@@ -1,0 +1,40 @@
+- hosts: servers
+  become: yes
+  tasks:
+    - name: Install dnsmasq
+      apt: name=dnsmasq
+
+    - name: Enable dnsmasq
+      service: name=dnsmasq enabled=yes
+
+    - name: Copy dnsmasq configuration
+      copy: src=dnsmasq.conf dest=/etc/dnsmasq.conf
+      notify: Restart dnsmasq
+
+    - name: Copy example.com configuration
+      copy: src=example.com dest=/etc/dnsmasq.d/
+      notify: Restart dnsmasq
+
+    - name: Copy hosts file
+      copy: src=hosts dest=/etc/hosts
+      notify: Restart dnsmasq
+
+  handlers:
+    - name: Restart dnsmasq
+      service: name=dnsmasq state=restarted
+
+- hosts: clients
+  become: yes
+  tasks:
+    - name: Copy resolvconf configuration
+      copy: src=head dest=/etc/resolvconf/resolv.conf.d/
+      notify: 
+        - Enable resolvconf updates
+        - Update resolvconf
+
+  handlers:
+    - name: Enable resolvconf updates
+      command: resolvconf --enable-updates
+
+    - name: Update resolvconf
+      command: resolvconf -u

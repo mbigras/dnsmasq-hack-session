@@ -1,0 +1,10 @@
+no-dhcp-interface=enp0s8
+bogus-priv
+domain=example.com
+expand-hosts
+local=/example.com/
+domain-needed
+no-resolv
+no-poll
+server=8.8.8.8
+server=8.8.4.4
