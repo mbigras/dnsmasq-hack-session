@@ -68,3 +68,17 @@
         name: app.service
         state: restarted
         daemon_reload: yes
+
+- hosts: web
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt: name=nginx
+
+    - name: Copy configuration
+      copy: src=app.conf dest=/etc/nginx/conf.d
+      notify: Reload nginx
+
+  handlers:
+    - name: Reload nginx
+      systemd: name=nginx state=reloaded
