@@ -12,3 +12,7 @@ vagrant status
 ansible all -m ping
 ansible-playbook main.yml
 ```
+
+```
+vagrant ssh baz -c 'dig +short bar.example.com'
+```
