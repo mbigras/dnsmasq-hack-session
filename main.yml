@@ -38,3 +38,33 @@
 
     - name: Update resolvconf
       command: resolvconf -u
+
+- hosts: app
+  become: yes
+  tasks:
+    - name: Create a group for application
+      group: name=app
+
+    - name: Create a user for application
+      user:
+        name: app
+        comment: Service account for application
+        uid: 1001
+        group: app
+        create_home: yes
+
+    - name: Copy application
+      # the leading 0 is because 755 is an octal number
+      copy: src=app dest=/home/app/app mode=0755
+      notify: Restart application
+
+    - name: Copy unit file
+      copy: src=app.service dest=/etc/systemd/system/
+      notify: Restart application
+
+  handlers:
+    - name: Restart application
+      systemd:
+        name: app.service
+        state: restarted
+        daemon_reload: yes

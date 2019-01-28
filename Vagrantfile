@@ -35,5 +35,11 @@ inventory = <<EOF
 
 [clients]
 #{hosts[1..-1].map { |h| h['ip'] }.join("\n")}
+
+[web]
+#{hosts[1]['ip']}
+
+[app]
+#{hosts[2]['ip']}
 EOF
 File.write(ansible_inventory, inventory)
